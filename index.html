@@ -189,7 +189,7 @@ const shuffle = arr => {
 const initOwned = () => ({
   star: 1,
   plus: 1,
-  three: 0,
+  three: 1,
   heal: 3,
   def: 3,
   atk: 3
@@ -868,11 +868,9 @@ function DropBattle() {
     const isUsed = used.has(key);
     const isSel = action === key && !isUsed;
     const crossBonus = !isUsed && !isSel && selEff ? (key === "atk" ? selEff.splitAtk : key === "def" ? selEff.splitDef : 0) : 0;
-    let val = "×" + a.per;
+    let val;
     let valSize = "1.2rem";
-    if (isUsed) {
-      val = tv[key] > 0 ? String(tv[key]) : "0";
-    } else if (isSel && selEff) {
+    if (isSel && selEff) {
       let v = selEff.main;
       if (key === "atk") v += selEff.splitAtk;
       if (key === "def") v += selEff.splitDef;
@@ -882,6 +880,8 @@ function DropBattle() {
       const base = tv[key];
       val = base > 0 ? `${base}+${crossBonus}` : `+${crossBonus}`;
       valSize = "0.85rem";
+    } else {
+      val = String(tv[key]);
     }
     return /*#__PURE__*/React.createElement("button", {
       key: key,
@@ -913,14 +913,16 @@ function DropBattle() {
         lineHeight: "16px",
         color: isUsed ? "#777" : "#e7e0ef"
       }
-    }, a.label, isSel ? " ●" : ""), /*#__PURE__*/React.createElement("span", {
+    }, a.label, /*#__PURE__*/React.createElement("span", {
+      style: { fontSize: 8, opacity: 0.5, marginLeft: 2 }
+    }, "\xD7", a.per)), /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: valSize,
         height: 26,
         lineHeight: "26px",
         fontWeight: 700,
         fontVariantNumeric: "tabular-nums",
-        color: isUsed ? a.color : isSel && selEff ? info && info.mult > 1 ? "#ffe88a" : "#fff" : crossBonus > 0 ? "#ffcf5d" : "#9b93a6",
+        color: isSel && selEff ? info && info.mult > 1 ? "#ffe88a" : "#fff" : crossBonus > 0 ? "#ffcf5d" : isUsed ? a.color : tv[key] > 0 ? "#e0d8f0" : "#9b93a6",
         textShadow: isSel && selEff && info && info.mult > 1 ? "0 0 8px #ffd54a" : crossBonus > 0 ? "0 0 6px #ffcf5d" : "none"
       }
     }, val));
