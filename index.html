@@ -613,11 +613,16 @@ function DropBattle() {
     const move = e => {
       if (!pressingRef.current) return;
       const idx = cellAt(e.clientX, e.clientY);
-      if (idx == null) setPreview(p => p ? {
-        ids: new Set(),
-        over: false,
-        info: null
-      } : p);else setPreview(makePreview(boardRef.current, idx));
+      if (idx == null) {
+        setPreview({ ids: new Set(), over: false, info: null });
+      } else {
+        const cellId = boardRef.current[idx].id;
+        if (startGroupRef.current && startGroupRef.current.has(cellId)) {
+          setPreview(makePreview(boardRef.current, idx));
+        } else {
+          setPreview({ ids: new Set(), over: false, info: null });
+        }
+      }
     };
     const up = e => {
       if (!pressingRef.current) return;
