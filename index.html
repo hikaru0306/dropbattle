@@ -386,6 +386,7 @@ function DropBattle() {
   const statusRef = useRef(status);
   const turnNumRef = useRef(turn);
   const pressingRef = useRef(false);
+  const startGroupRef = useRef(null);
   const commitRef = useRef(() => {});
   const onDefeatRef = useRef(() => {});
   const [bagOpen, setBagOpen] = useState(false);
@@ -623,7 +624,13 @@ function DropBattle() {
       pressingRef.current = false;
       const idx = cellAt(e.clientX, e.clientY);
       setPreview(null);
-      if (idx != null) commitRef.current(idx);
+      if (idx != null) {
+        const releaseId = boardRef.current[idx].id;
+        if (startGroupRef.current && startGroupRef.current.has(releaseId)) {
+          commitRef.current(idx);
+        }
+      }
+      startGroupRef.current = null;
     };
     window.addEventListener("pointermove", move, {
       passive: false
@@ -641,6 +648,7 @@ function DropBattle() {
     if (!actionRef.current || usedRef.current.has(actionRef.current)) return;
     e.preventDefault();
     pressingRef.current = true;
+    startGroupRef.current = findGroup(boardRef.current, idx);
     setPreview(makePreview(boardRef.current, idx));
   };
   const endTurnEarly = () => {
