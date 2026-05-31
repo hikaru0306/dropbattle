@@ -998,16 +998,7 @@ function DropBattle() {
       textShadow: `0 0 14px ${f.color}, 0 2px 3px #000`,
       animation: "fxPop .72s ease forwards"
     }
-  }, f.text)))), /*#__PURE__*/React.createElement("button", {
-    onClick: endTurnEarly,
-    disabled: locked || status !== "playing",
-    className: "w-full rounded-xl py-1.5 mb-2 tracking-widest font-bold",
-    style: {
-      background: locked ? "rgba(255,255,255,.06)" : "linear-gradient(180deg,#ffcf5d,#d99413)",
-      color: locked ? "rgba(255,255,255,.4)" : "#2a1a00",
-      boxShadow: locked ? "none" : "0 3px 0 #a06a0a"
-    }
-  }, "\u30BF\u30FC\u30F3\u7D42\u4E86\uFF08\u6575\u304C\u653B\u6483\uFF09"), bagOpen && /*#__PURE__*/React.createElement("div", {
+  }, f.text)))), bagOpen && /*#__PURE__*/React.createElement("div", {
     className: "fixed inset-0 flex items-center justify-center px-5",
     style: {
       background: "rgba(8,4,14,.85)",
