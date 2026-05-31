@@ -875,7 +875,13 @@ function DropBattle() {
       if (key === "atk") v += selEff.splitAtk;
       if (key === "def") v += selEff.splitDef;
       if (key === "heal") v += selEff.healBonus;
-      val = `+${v}`;
+      const base = tv[key];
+      if (base > 0) {
+        val = `${base + v}(${base}+${v})`;
+        valSize = "0.7rem";
+      } else {
+        val = `+${v}`;
+      }
     } else if (crossBonus > 0) {
       const base = tv[key];
       val = base > 0 ? `${base}+${crossBonus}` : `+${crossBonus}`;
