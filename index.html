@@ -867,7 +867,7 @@ function DropBattle() {
     const a = ACTIONS[key];
     const isUsed = used.has(key);
     const isSel = action === key && !isUsed;
-    const crossBonus = !isSel && selEff ? (key === "atk" ? selEff.splitAtk : key === "def" ? selEff.splitDef : 0) : 0;
+    const crossBonus = !isSel && selEff ? (key === "atk" ? selEff.splitAtk : key === "def" ? selEff.splitDef : key === "heal" ? selEff.healBonus : 0) : 0;
     const mkBreakdown = (total, base, bonus, tc) => /*#__PURE__*/React.createElement("span", {style:{display:"flex",alignItems:"baseline",gap:2,justifyContent:"center"}}, /*#__PURE__*/React.createElement("span", {style:{fontSize:"1.15rem",color:tc,fontWeight:900,textShadow:`0 0 8px ${tc}`}}, total), /*#__PURE__*/React.createElement("span", {style:{fontSize:"0.58rem",opacity:0.6}}, `(${base}+${bonus})`));
     let valEl;
     if (isSel && selEff) {
