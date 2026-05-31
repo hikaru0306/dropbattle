@@ -276,9 +276,10 @@ const groupInfo = (cells, ids) => {
 
 // 効果値を action ごとに算出（攻/防/回ドロップの付与込み）
 const computeEffect = (act, info) => {
-  const main = info.base * ACTIONS[act].per * info.mult; // 選択した効果の主値
-  const splitAtk = info.sp.atk > 0 ? Math.round(main / 2) : 0;
-  const splitDef = info.sp.def > 0 ? Math.round(main / 2) : 0;
+  const main = info.base * ACTIONS[act].per * info.mult;
+  const healMult = act === "heal" ? 10 : 1;
+  const splitAtk = info.sp.atk * Math.round(main / 2) * healMult;
+  const splitDef = info.sp.def * Math.round(main / 2) * healMult;
   const healBonus = info.sp.heal * 10;
   return {
     main,
@@ -853,13 +854,17 @@ function DropBattle() {
     const a = ACTIONS[key];
     const isUsed = used.has(key);
     const isSel = action === key && !isUsed;
+    const crossBonus = !isUsed && !isSel && selEff ? (key === "atk" ? selEff.splitAtk : key === "def" ? selEff.splitDef : 0) : 0;
     let val = "×" + a.per;
-    if (isUsed) val = "済";else if (isSel && selEff) {
+    if (isUsed) val = "済";
+    else if (isSel && selEff) {
       let v = selEff.main;
       if (key === "atk") v += selEff.splitAtk;
       if (key === "def") v += selEff.splitDef;
       if (key === "heal") v += selEff.healBonus;
       val = `+${v}`;
+    } else if (crossBonus > 0) {
+      val = `+${crossBonus}`;
     }
     return /*#__PURE__*/React.createElement("button", {
       key: key,
@@ -898,8 +903,8 @@ function DropBattle() {
         lineHeight: "26px",
         fontWeight: 700,
         fontVariantNumeric: "tabular-nums",
-        color: isUsed ? "#666" : isSel && selEff ? info && info.mult > 1 ? "#ffe88a" : "#fff" : "#9b93a6",
-        textShadow: isSel && selEff && info && info.mult > 1 ? "0 0 8px #ffd54a" : "none"
+        color: isUsed ? "#666" : isSel && selEff ? info && info.mult > 1 ? "#ffe88a" : "#fff" : crossBonus > 0 ? "#ffcf5d" : "#9b93a6",
+        textShadow: isSel && selEff && info && info.mult > 1 ? "0 0 8px #ffd54a" : crossBonus > 0 ? "0 0 6px #ffcf5d" : "none"
       }
     }, val));
   })), /*#__PURE__*/React.createElement("div", {
