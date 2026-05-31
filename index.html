@@ -143,6 +143,22 @@ const ITEMS = {
     glowc: "#ff5a5a",
     name: "ソード",
     desc: "消した効果の半分を攻撃に追加"
+  },
+  atkx: {
+    mark: "攻",
+    color: "#ffe8cc",
+    ring: "rgba(255,140,0,.95)",
+    glowc: "#ff8c00",
+    name: "猛攻",
+    desc: "攻撃で消すと効果×2"
+  },
+  defx: {
+    mark: "防",
+    color: "#cce4ff",
+    ring: "rgba(0,160,255,.95)",
+    glowc: "#00a0ff",
+    name: "鉄壁",
+    desc: "防御で消すと効果×2"
   }
 };
 const ITEM_KEYS = Object.keys(ITEMS);
@@ -192,7 +208,9 @@ const initOwned = () => ({
   three: 1,
   heal: 3,
   def: 3,
-  atk: 3
+  atk: 3,
+  atkx: 0,
+  defx: 0
 });
 const refillBag = owned => ({
   ...owned
@@ -253,7 +271,9 @@ const groupInfo = (cells, ids) => {
     three: 0,
     heal: 0,
     def: 0,
-    atk: 0
+    atk: 0,
+    atkx: 0,
+    defx: 0
   };
   for (const cell of cells) {
     if (ids.has(cell.id) && cell.special) sp[cell.special]++;
@@ -276,7 +296,10 @@ const groupInfo = (cells, ids) => {
 
 // 効果値を action ごとに算出（攻/防/回ドロップの付与込み）
 const computeEffect = (act, info) => {
-  const main = info.base * ACTIONS[act].per * info.mult;
+  let actBoost = 1;
+  if (act === "atk" && info.sp.atkx > 0) actBoost = 2;
+  if (act === "def" && info.sp.defx > 0) actBoost = 2;
+  const main = info.base * ACTIONS[act].per * info.mult * actBoost;
   const healMult = act === "heal" ? 10 : 1;
   const splitAtk = Math.round(info.sp.atk * main / 2 * healMult);
   const splitDef = Math.round(info.sp.def * main / 2 * healMult);
@@ -861,7 +884,7 @@ function DropBattle() {
       color: info && info.mult > 1 ? "#ffe88a" : "rgba(255,255,255,.55)",
       textShadow: info && info.mult > 1 ? "0 0 8px #ffd54a" : "none"
     }
-  }, info ? `${info.count}個${info.sp.plus ? `（＋${info.sp.plus}）` : ""}${info.sp.star ? ` ★×${info.sp.star}` : ""}${info.mult > 1 ? ` → ${info.mult}倍！` : ""}` : `＋:数+1 / ★:6個以上で高倍率 / 3:3個で3倍 / 剣盾♥:追加効果`), /*#__PURE__*/React.createElement("div", {
+  }, info ? `${info.count}個${info.sp.plus ? `（＋${info.sp.plus}）` : ""}${info.sp.star ? ` ★×${info.sp.star}` : ""}${info.sp.atkx ? " 攻×2" : ""}${info.sp.defx ? " 防×2" : ""}${info.mult > 1 ? ` → ${info.mult}倍！` : ""}` : `＋:数+1 / ★:6個以上で高倍率 / 3:3個で3倍 / 剣盾♥:追加 / 攻:攻撃×2 / 防:防御×2`), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-3 gap-2 mb-1"
   }, ORDER.map(key => {
     const a = ACTIONS[key];
