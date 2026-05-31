@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
@@ -876,16 +876,7 @@ function DropBattle() {
       color: "#41d97a",
       ...numCell
     }
-  }, "\u271A", tv.heal))), /*#__PURE__*/React.createElement("div", {
-    className: "text-center text-[11px] mb-1 font-bold",
-    style: {
-      height: 14,
-      lineHeight: "14px",
-      color: info && info.mult > 1 ? "#ffe88a" : "rgba(255,255,255,.55)",
-      textShadow: info && info.mult > 1 ? "0 0 8px #ffd54a" : "none"
-    }
-  }, info ? `${info.count}個${info.sp.plus ? `（＋${info.sp.plus}）` : ""}${info.sp.star ? ` ★×${info.sp.star}` : ""}${info.sp.atkx ? " 攻×2" : ""}${info.sp.defx ? " 防×2" : ""}${info.mult > 1 ? ` → ${info.mult}倍！` : ""}` : `＋:数+1 / ★:6個以上で高倍率 / 3:3個で3倍 / 剣盾♥:追加 / 攻:攻撃×2 / 防:防御×2`), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-3 gap-2 mb-1"
+  }, "\u271A", tv.heal))), className: "grid grid-cols-3 gap-2 mb-1"
   }, ORDER.map(key => {
     const a = ACTIONS[key];
     const isUsed = used.has(key);
@@ -980,7 +971,21 @@ function DropBattle() {
         transition: "transform .12s ease, opacity .2s ease, box-shadow .12s ease",
         touchAction: "none"
       }
-    }, /*#__PURE__*/React.createElement("span", {
+    }, it ? /*#__PURE__*/React.createElement("span", {
+      style: {
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: 900,
+        fontSize: it.mark.length > 1 ? "0.8rem" : "1.25rem",
+        color: it.color,
+        textShadow: `0 0 5px ${it.glowc}, 0 1px 1px rgba(0,0,0,.55)`,
+        animation: "markPulse 1.6s ease-in-out infinite",
+        pointerEvents: "none"
+      }
+    }, it.mark) : /*#__PURE__*/React.createElement("span", {
       style: {
         width: "42%",
         height: "42%",
