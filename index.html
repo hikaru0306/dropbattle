@@ -867,27 +867,21 @@ function DropBattle() {
     const a = ACTIONS[key];
     const isUsed = used.has(key);
     const isSel = action === key && !isUsed;
-    const crossBonus = !isUsed && !isSel && selEff ? (key === "atk" ? selEff.splitAtk : key === "def" ? selEff.splitDef : 0) : 0;
-    let val;
-    let valSize = "1.2rem";
+    const crossBonus = !isSel && selEff ? (key === "atk" ? selEff.splitAtk : key === "def" ? selEff.splitDef : 0) : 0;
+    const mkBreakdown = (total, base, bonus, tc) => /*#__PURE__*/React.createElement("span", {style:{display:"flex",alignItems:"baseline",gap:2,justifyContent:"center"}}, /*#__PURE__*/React.createElement("span", {style:{fontSize:"1.15rem",color:tc,fontWeight:900,textShadow:`0 0 8px ${tc}`}}, total), /*#__PURE__*/React.createElement("span", {style:{fontSize:"0.58rem",opacity:0.6}}, `(${base}+${bonus})`));
+    let valEl;
     if (isSel && selEff) {
       let v = selEff.main;
       if (key === "atk") v += selEff.splitAtk;
       if (key === "def") v += selEff.splitDef;
       if (key === "heal") v += selEff.healBonus;
       const base = tv[key];
-      if (base > 0) {
-        val = `${base + v}(${base}+${v})`;
-        valSize = "0.7rem";
-      } else {
-        val = `+${v}`;
-      }
+      valEl = base > 0 ? mkBreakdown(base + v, base, v, info && info.mult > 1 ? "#ffe88a" : "#fff") : `+${v}`;
     } else if (crossBonus > 0) {
       const base = tv[key];
-      val = base > 0 ? `${base}+${crossBonus}` : `+${crossBonus}`;
-      valSize = "0.85rem";
+      valEl = base > 0 ? mkBreakdown(base + crossBonus, base, crossBonus, "#ffcf5d") : `+${crossBonus}`;
     } else {
-      val = String(tv[key]);
+      valEl = String(tv[key]);
     }
     return /*#__PURE__*/React.createElement("button", {
       key: key,
@@ -923,15 +917,18 @@ function DropBattle() {
       style: { fontSize: 8, opacity: 0.5, marginLeft: 2 }
     }, "\xD7", a.per)), /*#__PURE__*/React.createElement("span", {
       style: {
-        fontSize: valSize,
+        fontSize: "1.2rem",
         height: 26,
         lineHeight: "26px",
         fontWeight: 700,
         fontVariantNumeric: "tabular-nums",
-        color: isSel && selEff ? info && info.mult > 1 ? "#ffe88a" : "#fff" : crossBonus > 0 ? "#ffcf5d" : isUsed ? a.color : tv[key] > 0 ? "#e0d8f0" : "#9b93a6",
-        textShadow: isSel && selEff && info && info.mult > 1 ? "0 0 8px #ffd54a" : crossBonus > 0 ? "0 0 6px #ffcf5d" : "none"
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: isSel && selEff && tv[key] === 0 ? info && info.mult > 1 ? "#ffe88a" : "#fff" : crossBonus > 0 && tv[key] === 0 ? "#ffcf5d" : isUsed ? a.color : tv[key] > 0 ? "#e0d8f0" : "#9b93a6",
+        textShadow: isSel && selEff && tv[key] === 0 && info && info.mult > 1 ? "0 0 8px #ffd54a" : "none"
       }
-    }, val));
+    }, valEl));
   })), /*#__PURE__*/React.createElement("div", {
     className: "relative"
   }, /*#__PURE__*/React.createElement("div", {
