@@ -278,8 +278,8 @@ const groupInfo = (cells, ids) => {
 const computeEffect = (act, info) => {
   const main = info.base * ACTIONS[act].per * info.mult;
   const healMult = act === "heal" ? 10 : 1;
-  const splitAtk = info.sp.atk * Math.round(main / 2) * healMult;
-  const splitDef = info.sp.def * Math.round(main / 2) * healMult;
+  const splitAtk = Math.round(info.sp.atk * main / 2 * healMult);
+  const splitDef = Math.round(info.sp.def * main / 2 * healMult);
   const healBonus = info.sp.heal * 10;
   return {
     main,
@@ -869,15 +869,19 @@ function DropBattle() {
     const isSel = action === key && !isUsed;
     const crossBonus = !isUsed && !isSel && selEff ? (key === "atk" ? selEff.splitAtk : key === "def" ? selEff.splitDef : 0) : 0;
     let val = "×" + a.per;
-    if (isUsed) val = "済";
-    else if (isSel && selEff) {
+    let valSize = "1.2rem";
+    if (isUsed) {
+      val = tv[key] > 0 ? String(tv[key]) : "0";
+    } else if (isSel && selEff) {
       let v = selEff.main;
       if (key === "atk") v += selEff.splitAtk;
       if (key === "def") v += selEff.splitDef;
       if (key === "heal") v += selEff.healBonus;
       val = `+${v}`;
     } else if (crossBonus > 0) {
-      val = `+${crossBonus}`;
+      const base = tv[key];
+      val = base > 0 ? `${base}+${crossBonus}` : `+${crossBonus}`;
+      valSize = "0.85rem";
     }
     return /*#__PURE__*/React.createElement("button", {
       key: key,
@@ -911,12 +915,12 @@ function DropBattle() {
       }
     }, a.label, isSel ? " ●" : ""), /*#__PURE__*/React.createElement("span", {
       style: {
-        fontSize: "1.2rem",
+        fontSize: valSize,
         height: 26,
         lineHeight: "26px",
         fontWeight: 700,
         fontVariantNumeric: "tabular-nums",
-        color: isUsed ? "#666" : isSel && selEff ? info && info.mult > 1 ? "#ffe88a" : "#fff" : crossBonus > 0 ? "#ffcf5d" : "#9b93a6",
+        color: isUsed ? a.color : isSel && selEff ? info && info.mult > 1 ? "#ffe88a" : "#fff" : crossBonus > 0 ? "#ffcf5d" : "#9b93a6",
         textShadow: isSel && selEff && info && info.mult > 1 ? "0 0 8px #ffd54a" : crossBonus > 0 ? "0 0 6px #ffcf5d" : "none"
       }
     }, val));
