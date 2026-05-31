@@ -187,12 +187,12 @@ const shuffle = arr => {
 // ===== 袋（抽選プール）=====
 // owned: 各アイテムの所持数。bag: 現在袋に残っている枚数。
 const initOwned = () => ({
-  star: 5,
-  plus: 5,
+  star: 0,
+  plus: 0,
   three: 0,
-  heal: 0,
-  def: 0,
-  atk: 0
+  heal: 3,
+  def: 3,
+  atk: 3
 });
 const refillBag = owned => ({
   ...owned
@@ -531,7 +531,6 @@ function DropBattle() {
     const enemy = FLOORS[nf];
     setEMax(enemy.hp);
     setEHP(enemy.hp);
-    setPHP(P_MAX);
     commitBoard(makeBoard(bagRef, ownedRef));
     setAction("atk");
     actionRef.current = "atk";
@@ -710,7 +709,7 @@ function DropBattle() {
       WebkitUserSelect: "none",
       userSelect: "none"
     },
-    className: "w-full flex justify-center px-3 py-4"
+    className: "w-full flex justify-center px-3 py-2"
   }, /*#__PURE__*/React.createElement("style", null, `
         @keyframes dropIn { from { transform: translateY(-46px); opacity:0; } to { transform: translateY(0); opacity:1; } }
         @keyframes markPulse { 0%,100%{ opacity:.78 } 50%{ opacity:1 } }
@@ -722,7 +721,7 @@ function DropBattle() {
       maxWidth: 440
     }
   }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-between mb-2"
+    className: "flex items-center justify-between mb-1"
   }, /*#__PURE__*/React.createElement("h1", {
     className: "tracking-widest font-bold",
     style: {
@@ -752,9 +751,9 @@ function DropBattle() {
       fontVariantNumeric: "tabular-nums"
     }
   }, "\xD7", ownedTotal))), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-stretch gap-2 mb-2"
+    className: "flex items-stretch gap-2 mb-1"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "flex-1 rounded-xl p-2.5",
+    className: "flex-1 rounded-xl p-2",
     style: {
       background: "rgba(65,217,122,.10)",
       border: "1px solid rgba(65,217,122,.4)"
@@ -780,7 +779,7 @@ function DropBattle() {
       color: "#ff9a9a"
     }
   }, incomingPreview))), /*#__PURE__*/React.createElement("div", {
-    className: "flex-1 rounded-xl p-2.5",
+    className: "flex-1 rounded-xl p-2",
     style: {
       background: "rgba(255,82,82,.10)",
       border: "1px solid rgba(255,82,82,.4)"
@@ -806,7 +805,7 @@ function DropBattle() {
       color: "#ffcaca"
     }
   }, enemyAtk)))), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-between rounded-lg px-3 py-2 mb-1 text-xs",
+    className: "flex items-center justify-between rounded-lg px-3 py-1 mb-1 text-xs",
     style: {
       background: "rgba(255,255,255,.06)"
     }
@@ -841,15 +840,15 @@ function DropBattle() {
       ...numCell
     }
   }, "\u271A", tv.heal))), /*#__PURE__*/React.createElement("div", {
-    className: "text-center text-[11px] mb-2 font-bold",
+    className: "text-center text-[11px] mb-1 font-bold",
     style: {
-      height: 18,
-      lineHeight: "18px",
+      height: 14,
+      lineHeight: "14px",
       color: info && info.mult > 1 ? "#ffe88a" : "rgba(255,255,255,.55)",
       textShadow: info && info.mult > 1 ? "0 0 8px #ffd54a" : "none"
     }
   }, info ? `${info.count}個${info.sp.plus ? `（＋${info.sp.plus}）` : ""}${info.sp.star ? ` ★×${info.sp.star}` : ""}${info.mult > 1 ? ` → ${info.mult}倍！` : ""}` : `＋:数+1 / ★:6個以上で高倍率 / 3:3個で3倍 / 剣盾♥:追加効果`), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-3 gap-2 mb-2"
+    className: "grid grid-cols-3 gap-2 mb-1"
   }, ORDER.map(key => {
     const a = ACTIONS[key];
     const isUsed = used.has(key);
@@ -870,7 +869,7 @@ function DropBattle() {
       disabled: isUsed,
       className: "rounded-xl flex flex-col items-center justify-center",
       style: {
-        height: 84,
+        height: 64,
         background: isUsed ? "rgba(0,0,0,.5)" : isSel ? a.bg : "rgba(255,255,255,.05)",
         border: `2px solid ${isUsed ? "rgba(255,255,255,.07)" : isSel ? a.color : "rgba(255,255,255,.14)"}`,
         boxShadow: isSel ? `0 0 16px -1px ${a.color}, inset 0 0 14px -5px ${a.color}` : "none",
@@ -906,7 +905,7 @@ function DropBattle() {
   })), /*#__PURE__*/React.createElement("div", {
     className: "relative"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-6 gap-1.5 mb-3",
+    className: "grid grid-cols-6 gap-1.5 mb-2",
     style: {
       touchAction: "none"
     },
@@ -975,7 +974,7 @@ function DropBattle() {
   }, f.text)))), /*#__PURE__*/React.createElement("button", {
     onClick: endTurnEarly,
     disabled: locked || status !== "playing",
-    className: "w-full rounded-xl py-2.5 mb-3 tracking-widest font-bold",
+    className: "w-full rounded-xl py-1.5 mb-2 tracking-widest font-bold",
     style: {
       background: locked ? "rgba(255,255,255,.06)" : "linear-gradient(180deg,#ffcf5d,#d99413)",
       color: locked ? "rgba(255,255,255,.4)" : "#2a1a00",
@@ -1075,7 +1074,7 @@ function DropBattle() {
     className: "rounded-lg px-3 py-2 text-[11px] leading-relaxed",
     style: {
       background: "rgba(0,0,0,.35)",
-      height: 80,
+      height: 60,
       overflowY: "auto",
       border: "1px solid rgba(255,255,255,.08)"
     }
